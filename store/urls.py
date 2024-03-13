@@ -21,5 +21,8 @@ urlpatterns=[
     path('basket/item/<int:pk>/quantity/change/', views.BasketItemUpdateQuantityView.as_view(), name='basket-item-qty-update'),
 
     path('checkout/', views.CheckOutView.as_view(), name='checkout'),
+
+    path('orders/all/', views.MyOrdersView.as_view(), name='orders'),
     
 ]
+

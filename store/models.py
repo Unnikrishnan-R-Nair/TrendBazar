@@ -197,6 +197,20 @@ class Order(models.Model):
 
 
 
+    @property
+    def order_total(self):
+
+        basket_items = self.basket_item_objects.all()
+
+        total = 0
+
+        for bi in basket_items:
+
+            total += bi.item_total
+
+        return total
+
+
 
 
 def create_basket(sender, instance, created, **kwargs):

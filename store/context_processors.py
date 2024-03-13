@@ -13,9 +13,11 @@ def cart_count(request):
 
     if request.user.is_authenticated:
 
-        data = request.user.cart.cartitems.filter(is_order_placed=False).values_list('quantity').aggregate(total=Sum('quantity'))
+        if request.user.cart.get_cart_items.count() > 0:
 
-        count = data.get('total')
+            data = request.user.cart.cartitems.filter(is_order_placed=False).values_list('quantity').aggregate(total=Sum('quantity'))
+
+            count = data.get('total')
 
     return {'item_count': count}
 

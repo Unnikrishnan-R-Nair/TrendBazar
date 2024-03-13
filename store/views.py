@@ -6,7 +6,7 @@ from store.forms import RegistrationForm, LoginForm
 
 from django.contrib.auth import authenticate, login, logout
 
-from store.models import Product, Size, BasketItem
+from store.models import Product, Size, BasketItem, Order
 
 # Create your views here.
 
@@ -171,4 +171,54 @@ class CheckOutView(View):
 
         return render(request, 'checkout.html')
     
+
+    def post(self, request, *args, **kwargs):
+
+        email = request.POST.get('email')
+
+        phone = request.POST.get('phone')
+
+        address = request.POST.get('delivery_address')
+
+        payment_method = request.POST.get('payment_mode')
+
+        # print(email, phone, address, payment_method)
+
+        user_obj = request.user
+
+        basket_item_objects = user_obj.cart.get_cart_items
+
+        order_obj = Order.objects.create(
+            user_object=user_obj,
+            delivery_address=address,
+            phone=phone,
+            email=email,
+            payment_mode=payment_method
+        )
+
+        for bi in basket_item_objects:
+
+            order_obj.basket_item_objects.add(bi)
+
+            bi.is_order_placed = True
+
+            bi.save()
+ 
+        return redirect('home')
     
+    
+
+class MyOrdersView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        qs = Order.objects.filter(user_object=request.user).exclude(status="cancelled")
+
+        return render(request, 'myorder.html', {'data': qs})
+    
+    
+
+
+
+
+

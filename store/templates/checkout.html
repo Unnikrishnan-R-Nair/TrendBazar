@@ -16,44 +16,47 @@
                     <img
                       class="h-20 w-20 rounded-lg border border-gray-200 bg-white object-contain"
                       src="{{bi.product_object.image.url}}"
-                      alt=""
+                      alt="{{bi.product_object.title}}"
                     />
                   </div>
                   <div class="ml-5 flex flex-col justify-between">
                     <div class="flex-1">
-                      <p class="text-sm font-bold">Nike Air Force 1 07 LV8</p>
+                      <p class="text-sm font-bold">{{bi.product_object.title}}</p>
                       <p class="mt-1.5 text-sm font-medium text-gray-500">
-                        Orange
+                        Size : {{bi.size_object}}
                       </p>
                     </div>
-                    <p class="mt-4 text-xs font-medium ">x 1</p>
+                    <p class="mt-4 text-xs font-medium ">x {{bi.quantity}}</p>
                   </div>
                 </div>
                 <div class="ml-auto flex flex-col items-end justify-between">
                   <p class="text-right text-sm font-bold text-gray-900">
-                    ₹47,199
+                    ₹{{bi.item_total}}
                   </p>
-                  <button
-                    type="button"
-                    class="-m-2 inline-flex rounded p-2 text-gray-400 transition-all duration-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
-                  >
-                    <span class="sr-only">Remove</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="h-5 w-5"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
+                  <a href="{% url 'basket-item-delete' bi.id %}">
+
+                      <button
+                        
+                        class="-m-2 inline-flex rounded p-2 text-gray-400 transition-all duration-200 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                      >
+                        <span class="sr-only">Remove</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="h-5 w-5"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                  </a>
                 </div>
               </li>
              
@@ -108,15 +111,15 @@
                     <div class="grid w-full max-w-sm items-center gap-1.5">
                       <label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        for="name"
+                        for="email"
                       >
                         Email
                       </label>
                       <input
                         class="flex w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                         type="email"
-                        id="name"
-                        placeholder="email"
+                        id="email"
+                        placeholder="Email"
                         name="email"
                         value="{{request.user.email}}"
                       />
@@ -124,15 +127,15 @@
                     <div class="grid w-full max-w-sm items-center gap-1.5">
                       <label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        for="email"
+                        for="phone"
                       >
                         Phone
                       </label>
                       <input
                         class="flex w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                         type="text"
-                        id="email"
-                        placeholder="phone"
+                        id="phone"
+                        placeholder="Phone"
                         name="phone"
                       />
                     </div>
@@ -147,7 +150,7 @@
                           class="flex w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                           type="text"
                           id="address"
-                          placeholder="address"
+                          placeholder="Address"
                           name="delivery_address"
                         />
                       </div>
@@ -155,25 +158,25 @@
                       <div class="grid w-full max-w-sm items-center gap-1.5">
                         <label
                           class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          for="email"
+                          for="payment_mode"
                         >
                           Payment Method
                         </label>
-                        <select name="payment_mode" id=""
+                        <select name="payment_mode" id="payment_mode"
                         class="flex w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            <option value="online">online</option>
-                            <option value="cod">cod</option>
+                            <option value="online" class="">Online</option>
+                            <option value="cod">COD</option>
 
                         </select>
                       </div>
 
                     <div>
                       <button
-                        type="button"
+                        type="submit"
                         class="w-full rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                       >
-                        Get Started
+                        Place Order
                       </button>
                     </div>
                   </div>
