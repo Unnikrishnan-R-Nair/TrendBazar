@@ -8,7 +8,25 @@ from django.contrib.auth import authenticate, login, logout
 
 from store.models import Product, Size, BasketItem, Order
 
+from django.views.decorators.csrf import csrf_exempt
+
+from django.utils.decorators import method_decorator
+
+import razorpay
+
+from dotenv import load_dotenv
+
+import os
+
 # Create your views here.
+
+load_dotenv()
+
+
+KEY_ID = os.getenv('KEY_ID')
+
+KEY_SECRET = os.getenv('KEY_SECRET')
+
 
 
 class SignUpView(View):
@@ -203,6 +221,36 @@ class CheckOutView(View):
             bi.is_order_placed = True
 
             bi.save()
+
+        
+        if  payment_method == "online" and order_obj:
+            	
+            client = razorpay.Client(auth=(KEY_ID, KEY_SECRET))
+
+            total_amount = order_obj.order_total * 100
+
+            data = { "amount": total_amount, "currency": "INR", "receipt": "order_rcptid_11" }
+
+            payment = client.order.create(data=data)
+
+            # print('=======payment=======', payment)
+
+            order_obj.order_id = payment.get('id')
+
+            order_obj.save()
+
+
+            data = {
+                'order_id': payment.get('id'),
+
+                'key_id': KEY_ID,
+
+                'amount': total_amount,
+
+            }
+
+            return render(request, 'payment.html', {'data': data})
+        
  
         return redirect('home')
     
@@ -218,7 +266,45 @@ class MyOrdersView(View):
     
     
 
+@method_decorator(csrf_exempt, name='dispatch')
+class PaymentVerificationView(View):
+
+    def post(self, request, *args, **kwargs):
+
+        # print(request.POST)
+
+        data = request.POST
+
+        client = razorpay.Client(auth=(KEY_ID, KEY_SECRET))
+
+        try:
+            client.utility.verify_payment_signature(data)
+
+            print('payment success')
+
+            order_id = data.get('razorpay_order_id')
+
+            order_object = Order.objects.get(order_id=order_id)
+
+            order_object.is_paid = True
+
+            order_object.save()
+        
+        except:
+
+            print('payment failed')
+
+
+        return redirect('home')
+    
 
 
 
+class SignoutView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        logout(request)
+
+        return redirect('signin')
 

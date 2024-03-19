@@ -23,6 +23,9 @@ urlpatterns=[
     path('checkout/', views.CheckOutView.as_view(), name='checkout'),
 
     path('orders/all/', views.MyOrdersView.as_view(), name='orders'),
+
+    path('verify/', views.PaymentVerificationView.as_view(), name='verification'),
+
     
 ]
 
