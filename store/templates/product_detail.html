@@ -4,7 +4,7 @@
 {% block body_block %}
 
 <section class="overflow-hidden">
-    <div class="mx-auto max-w-5xl px-5 py-24">
+    <div class="mx-auto max-w-5xl px-5 py-24 bg-teal-50 mt-10 mb-52">
 
       <form action="{% url 'add-to-cart' data.id %}" method="post">
         {% csrf_token %}

@@ -12,6 +12,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.utils.decorators import method_decorator
 
+from store.decorators import signin_required
+
+from django.views.decorators.cache import never_cache
+
 import razorpay
 
 from dotenv import load_dotenv
@@ -79,7 +83,8 @@ class SignInView(View):
         return render(request, 'login.html', {'form': form})
     
     
-    
+
+@method_decorator([signin_required, never_cache], name='dispatch')
 class HomeView(View):
 
     def get(self, request, *args, **kwargs):
@@ -89,7 +94,8 @@ class HomeView(View):
         return render(request, 'home.html', {'data': qs})
     
 
-    
+
+@method_decorator([signin_required, never_cache], name='dispatch')   
 class ProductDetailView(View):
 
     def get(self, request, *args, **kwargs):
@@ -103,7 +109,7 @@ class ProductDetailView(View):
 
 
 # url : localhost:8000/products/{id}/carts/add/
-
+@method_decorator([signin_required, never_cache], name='dispatch')
 class AddToCartView(View):
 
     def post(self, request, *args, **kwargs):
@@ -130,6 +136,7 @@ class AddToCartView(View):
     
 
 
+@method_decorator([signin_required, never_cache], name='dispatch')
 class CartItemListView(View):
 
     def get(self, request, *args, **kwargs):
@@ -140,8 +147,9 @@ class CartItemListView(View):
     
 
 
+
 # url: localhost:8000/basket/items/{id}/remove/
-    
+@method_decorator([signin_required, never_cache], name='dispatch')   
 class BasketItemDeleteView(View):
 
     def get(self, request, *args, **kwargs):
@@ -155,7 +163,7 @@ class BasketItemDeleteView(View):
 
 
 # url : localhost:8000/basket/item/{id}/quantity/change/
-    
+@method_decorator([signin_required, never_cache], name='dispatch')   
 class BasketItemUpdateQuantityView(View):
 
     def post(self, request, *args, **kwargs):
@@ -182,7 +190,8 @@ class BasketItemUpdateQuantityView(View):
         return redirect('cart-list')
     
 
-    
+
+@method_decorator([signin_required, never_cache], name='dispatch')    
 class CheckOutView(View):
 
     def get(self, request, *args, **kwargs):
@@ -252,21 +261,23 @@ class CheckOutView(View):
             return render(request, 'payment.html', {'data': data})
         
  
-        return redirect('home')
-    
+        return redirect('orders')
     
 
+
+@method_decorator([signin_required, never_cache], name='dispatch')
 class MyOrdersView(View):
 
     def get(self, request, *args, **kwargs):
 
-        qs = Order.objects.filter(user_object=request.user).exclude(status="cancelled")
+        qs = Order.objects.filter(user_object=request.user).exclude(status="cancelled").order_by("-id")
 
         return render(request, 'myorder.html', {'data': qs})
     
     
+    
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator([csrf_exempt, never_cache, signin_required], name='dispatch')
 class PaymentVerificationView(View):
 
     def post(self, request, *args, **kwargs):
@@ -295,11 +306,12 @@ class PaymentVerificationView(View):
             print('payment failed')
 
 
-        return redirect('home')
+        return redirect('orders')
     
 
 
 
+@method_decorator([signin_required, never_cache], name='dispatch')
 class SignoutView(View):
 
     def get(self, request, *args, **kwargs):

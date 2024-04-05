@@ -26,6 +26,8 @@ urlpatterns=[
 
     path('verify/', views.PaymentVerificationView.as_view(), name='verification'),
 
+    path('logout/', views.SignoutView.as_view(), name='signout')
+
     
 ]
 
